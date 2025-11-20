@@ -990,7 +990,7 @@ export type PromptInputSubmitProps = ComponentProps<typeof InputGroupButton> & {
 
 export const PromptInputSubmit = ({
   className,
-  variant = "default",
+  variant = "ghost",
   size = "icon-sm",
   status,
   children,
@@ -1009,7 +1009,7 @@ export const PromptInputSubmit = ({
   return (
     <InputGroupButton
       aria-label="Submit"
-      className={cn(className)}
+      className={cn("bg-primary text-primary-foreground hover:bg-[var(--belfius-hover)] hover:text-primary-foreground", className)}
       size={size}
       type="submit"
       variant={variant}

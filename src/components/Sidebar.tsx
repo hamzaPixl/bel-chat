@@ -1,20 +1,16 @@
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight, Trash2, Download } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { agents, type Agent } from '@/lib/agents'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip'
 import { Avatar, AvatarFallback } from './ui/avatar'
-import { Button } from './ui/button'
 
 interface SidebarProps {
   selectedAgent: Agent
   onSelectAgent: (agent: Agent) => void
-  onClearConversation?: () => void
-  onDownloadConversation?: () => void
-  hasMessages?: boolean
 }
 
-export function Sidebar({ selectedAgent, onSelectAgent, onClearConversation, onDownloadConversation, hasMessages = false }: SidebarProps) {
+export function Sidebar({ selectedAgent, onSelectAgent }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false)
 
   return (
@@ -107,71 +103,6 @@ export function Sidebar({ selectedAgent, onSelectAgent, onClearConversation, onD
           })}
         </div>
       </div>
-
-      {/* Footer with Clear and Download buttons */}
-      {hasMessages && (
-        <div className="border-t p-2 space-y-1">
-          {!isCollapsed ? (
-            <>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start gap-2 bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
-                onClick={onClearConversation}
-              >
-                <Trash2 className="h-4 w-4" />
-                Clear
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start gap-2 bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
-                onClick={onDownloadConversation}
-              >
-                <Download className="h-4 w-4" />
-                Download
-              </Button>
-            </>
-          ) : (
-            <>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
-                      onClick={onClearConversation}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Clear conversation</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
-                      onClick={onDownloadConversation}
-                    >
-                      <Download className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Download conversation</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </>
-          )}
-        </div>
-      )}
     </div>
   )
 }

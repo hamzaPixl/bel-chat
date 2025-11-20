@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from "react";
-import { User, CopyIcon } from "lucide-react";
+import { User, Trash2, Download, Mail } from "lucide-react";
 import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { useStatelessChat } from "@/hooks/useStatelessChat";
 import { agents, type Agent } from "@/lib/agents";
 import { Sidebar } from "./Sidebar";
-import { Feedback } from "./Feedback";
 import {
   Conversation,
   ConversationContent,
@@ -14,8 +14,6 @@ import {
   Message,
   MessageContent,
   MessageResponse,
-  MessageActions,
-  MessageAction,
 } from "@/components/ai-elements/message";
 import {
   PromptInput,
@@ -45,14 +43,6 @@ export function Chat() {
     sendMessage({ text: message.text || "", agent: selectedAgent });
   };
 
-  const handleFeedback = (
-    messageId: string,
-    type: "thumbs-up" | "thumbs-down" | "message",
-    comment?: string
-  ) => {
-    console.log("Feedback:", { messageId, type, comment });
-    // In a real app, send this to your backend
-  };
 
   const handleDownloadConversation = () => {
     const conversationText = messages
@@ -83,19 +73,81 @@ export function Chat() {
     }
   };
 
+  const handleSendByEmail = () => {
+    const conversationText = messages
+      .map((message) => {
+        const textContent = message.parts
+          .filter((part) => part.type === "text")
+          .map((part) => part.text)
+          .join("");
+        const role = message.role === "user" ? "You" : "Assistant";
+        return `${role}: ${textContent}`;
+      })
+      .join("\n\n");
+
+    const subject = `Conversation with ${selectedAgent.name} - ${new Date().toLocaleDateString()}`;
+    const body = encodeURIComponent(conversationText);
+    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${body}`;
+  };
+
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
       <Sidebar
         selectedAgent={selectedAgent}
         onSelectAgent={setSelectedAgent}
-        onClearConversation={handleClearConversation}
-        onDownloadConversation={handleDownloadConversation}
-        hasMessages={messages.length > 0}
       />
 
       {/* Main Chat Area */}
       <div className="flex flex-col flex-1 min-w-0">
+        {/* Top Bar - Only shown when there are messages */}
+        {messages.length > 0 && (
+          <div className="flex-shrink-0 border-b bg-background px-6 py-4">
+            <div className="mx-auto w-full max-w-3xl flex items-center justify-between">
+              <div className="flex flex-col gap-1">
+                <h2 className="font-semibold text-lg">Conversation</h2>
+                <p className="text-muted-foreground text-sm">
+                  {new Date().toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="bg-primary text-primary-foreground hover:bg-[var(--belfius-hover)] hover:text-primary-foreground"
+                  onClick={handleClearConversation}
+                  title="Clear conversation"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="bg-primary text-primary-foreground hover:bg-[var(--belfius-hover)] hover:text-primary-foreground"
+                  onClick={handleDownloadConversation}
+                  title="Download conversation"
+                >
+                  <Download className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="bg-primary text-primary-foreground hover:bg-[var(--belfius-hover)] hover:text-primary-foreground"
+                  onClick={handleSendByEmail}
+                  title="Send by email"
+                >
+                  <Mail className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Conversation - Scrollable area */}
         <div className="flex-1 overflow-hidden">
           <Conversation className="h-full">
@@ -162,25 +214,6 @@ export function Chat() {
                               )}
                             </MessageContent>
                           </Message>
-
-                          {message.role === "assistant" && (
-                            <div className="flex items-center gap-2">
-                              <Feedback
-                                messageId={message.id}
-                                onFeedback={handleFeedback}
-                              />
-                              <MessageActions>
-                                <MessageAction
-                                  onClick={() =>
-                                    navigator.clipboard.writeText(textContent)
-                                  }
-                                  label="Copy"
-                                >
-                                  <CopyIcon className="size-3" />
-                                </MessageAction>
-                              </MessageActions>
-                            </div>
-                          )}
                         </div>
 
                         {message.role === "user" && (
