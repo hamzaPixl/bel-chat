@@ -51,7 +51,7 @@ export interface Agent {
   description: string;
 }
 // Base URL of your FastAPI backend
-const BASE_URL = "http://localhost:8882/api"; // Change to your backend URL
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8882/api";
 // API client class
 class ApiClient {
   async getHealth(): Promise<HealthResponse> {

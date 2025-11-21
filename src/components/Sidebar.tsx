@@ -23,27 +23,27 @@ export function Sidebar({ selectedAgent, onSelectAgent }: SidebarProps) {
       {/* Header */}
       <div className="flex h-16 items-center justify-between border-b px-4">
         {!isCollapsed && (
-          <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="Belfius" className="h-8 w-8" />
-            <h2 className="text-lg font-semibold">Belfius</h2>
-          </div>
+          <>
+            <div className="flex items-center gap-2">
+              <img src="/logo.png" alt="Belfius" className="h-8 w-8" />
+              <h2 className="text-lg font-semibold">Belfius</h2>
+            </div>
+            <button
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="rounded-md p-1.5 hover:bg-primary/10 transition-colors ml-auto"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+          </>
         )}
         {isCollapsed && (
-          <img src="/logo.png" alt="Belfius" className="h-8 w-8 mx-auto" />
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="mx-auto hover:opacity-80 transition-opacity"
+          >
+            <img src="/logo.png" alt="Belfius" className="h-8 w-8" />
+          </button>
         )}
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className={cn(
-            "rounded-md p-1.5 hover:bg-primary/10 transition-colors",
-            !isCollapsed && "ml-auto"
-          )}
-        >
-          {isCollapsed ? (
-            <ChevronRight className="h-4 w-4" />
-          ) : (
-            <ChevronLeft className="h-4 w-4" />
-          )}
-        </button>
       </div>
 
       {/* Agent List */}

@@ -3,9 +3,13 @@ import { User, Trash2, Download, Mail } from "lucide-react";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
-import { useStatelessChat } from "@/hooks/useStatelessChat";
-import { agents, type Agent } from "@/lib/agents";
+import { useChat } from "@/hooks/useChat";
+import { agents, type Agent, initializeAgents } from "@/lib/agents";
 import { Sidebar } from "./Sidebar";
+import { Feedback } from "./Feedback";
+import { EmailDialog } from "./EmailDialog";
+import { LanguageSelector } from "./LanguageSelector";
+import apiClient, { type Message as ApiMessage, type EmailRequest } from "@/api";
 import {
   Conversation,
   ConversationContent,
@@ -24,9 +28,28 @@ import {
 } from "@/components/ai-elements/prompt-input";
 
 export function Chat() {
-  const [selectedAgent, setSelectedAgent] = useState<Agent>(agents[0]);
-  const { messages, status, sendMessage } = useStatelessChat();
+  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+  const [agentsList, setAgentsList] = useState<Agent[]>([]);
+  const [isLoadingAgents, setIsLoadingAgents] = useState(true);
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+
+  const { messages, status, sessionId, language, sendMessage, clearMessages, changeLanguage } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Initialize agents on mount
+  useEffect(() => {
+    async function loadAgents() {
+      setIsLoadingAgents(true);
+      await initializeAgents();
+      setAgentsList([...agents]);
+      if (agents.length > 0 && !selectedAgent) {
+        setSelectedAgent(agents[0]);
+      }
+      setIsLoadingAgents(false);
+    }
+    loadAgents();
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -38,11 +61,10 @@ export function Chat() {
 
   const handleSubmit = (message: PromptInputMessage) => {
     const hasText = Boolean(message.text);
-    if (!hasText) return;
+    if (!hasText || !selectedAgent) return;
 
     sendMessage({ text: message.text || "", agent: selectedAgent });
   };
-
 
   const handleDownloadConversation = () => {
     const conversationText = messages
@@ -69,26 +91,63 @@ export function Chat() {
 
   const handleClearConversation = () => {
     if (window.confirm("Are you sure you want to clear the conversation?")) {
-      window.location.reload();
+      clearMessages();
     }
   };
 
-  const handleSendByEmail = () => {
-    const conversationText = messages
-      .map((message) => {
-        const textContent = message.parts
-          .filter((part) => part.type === "text")
-          .map((part) => part.text)
-          .join("");
-        const role = message.role === "user" ? "You" : "Assistant";
-        return `${role}: ${textContent}`;
-      })
-      .join("\n\n");
+  const handleSendByEmail = async (email: string) => {
+    if (!selectedAgent) return;
 
-    const subject = `Conversation with ${selectedAgent.name} - ${new Date().toLocaleDateString()}`;
-    const body = encodeURIComponent(conversationText);
-    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${body}`;
+    setIsSendingEmail(true);
+    try {
+      // Convert messages to API format
+      const history: ApiMessage[] = messages.map((msg) => ({
+        content: msg.parts.map(p => p.text).join(''),
+        sender: msg.role,
+      }));
+
+      const emailRequest: EmailRequest = {
+        history,
+        session_id: sessionId,
+        email,
+        language,
+        agent: selectedAgent.id,
+      };
+
+      await apiClient.sendEmail(emailRequest);
+      setEmailDialogOpen(false);
+      alert('Conversation sent successfully!');
+    } catch (error) {
+      console.error('Failed to send email:', error);
+      alert('Failed to send email. Please try again.');
+    } finally {
+      setIsSendingEmail(false);
+    }
   };
+
+  const handleFeedback = (messageId: string, type: 'thumbs-up' | 'thumbs-down') => {
+    console.log('Feedback:', { messageId, type });
+  };
+
+  if (isLoadingAgents) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg text-muted-foreground">Loading agents...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!selectedAgent) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg text-destructive">No agents available</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -116,6 +175,7 @@ export function Chat() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
+                <LanguageSelector value={language} onChange={changeLanguage} />
                 <Button
                   variant="ghost"
                   size="icon"
@@ -138,7 +198,7 @@ export function Chat() {
                   variant="ghost"
                   size="icon"
                   className="bg-primary text-primary-foreground hover:bg-[var(--belfius-hover)] hover:text-primary-foreground"
-                  onClick={handleSendByEmail}
+                  onClick={() => setEmailDialogOpen(true)}
                   title="Send by email"
                 >
                   <Mail className="h-4 w-4" />
@@ -181,7 +241,7 @@ export function Chat() {
 
                     // Get agent for this message
                     const messageAgent = message.agentId
-                      ? agents.find((a) => a.id === message.agentId) ||
+                      ? agentsList.find((a) => a.id === message.agentId) ||
                         selectedAgent
                       : selectedAgent;
 
@@ -214,6 +274,15 @@ export function Chat() {
                               )}
                             </MessageContent>
                           </Message>
+
+                          {message.role === "assistant" && (
+                            <Feedback
+                              messageId={message.id}
+                              messageText={textContent}
+                              sessionId={sessionId}
+                              onFeedback={handleFeedback}
+                            />
+                          )}
                         </div>
 
                         {message.role === "user" && (
@@ -250,6 +319,14 @@ export function Chat() {
           </div>
         </div>
       </div>
+
+      {/* Email Dialog */}
+      <EmailDialog
+        open={emailDialogOpen}
+        onOpenChange={setEmailDialogOpen}
+        onSend={handleSendByEmail}
+        isLoading={isSendingEmail}
+      />
     </div>
   );
 }
