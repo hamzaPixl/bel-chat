@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Globe } from 'lucide-react'
 import {
   Select,
@@ -13,13 +14,27 @@ interface LanguageSelectorProps {
 }
 
 const languages = [
-  { code: 'en', name: 'English', flag: '🇬🇧' },
-  { code: 'nl', name: 'Nederlands', flag: '🇳🇱' },
-  { code: 'fr', name: 'Français', flag: '🇫🇷' },
+  { code: 'en', flag: '🇬🇧' },
+  { code: 'nl', flag: '🇳🇱' },
+  { code: 'fr', flag: '🇫🇷' },
 ]
 
 export function LanguageSelector({ value, onChange }: LanguageSelectorProps) {
+  const { t } = useTranslation()
   const selectedLanguage = languages.find((lang) => lang.code === value)
+
+  const getLanguageName = (code: string) => {
+    switch (code) {
+      case 'en':
+        return t('language.english')
+      case 'fr':
+        return t('language.french')
+      case 'nl':
+        return t('language.dutch')
+      default:
+        return code
+    }
+  }
 
   return (
     <Select value={value} onValueChange={onChange}>
@@ -37,7 +52,7 @@ export function LanguageSelector({ value, onChange }: LanguageSelectorProps) {
         {languages.map((lang) => (
           <SelectItem key={lang.code} value={lang.code}>
             <span className="text-sm">
-              {lang.flag} {lang.name}
+              {lang.flag} {getLanguageName(lang.code)}
             </span>
           </SelectItem>
         ))}

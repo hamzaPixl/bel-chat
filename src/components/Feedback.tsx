@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ThumbsUp, ThumbsDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import apiClient from '@/api'
@@ -11,6 +12,7 @@ interface FeedbackProps {
 }
 
 export function Feedback({ messageId, messageText, sessionId, onFeedback }: FeedbackProps) {
+  const { t } = useTranslation()
   const [selected, setSelected] = useState<'up' | 'down' | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -69,9 +71,9 @@ export function Feedback({ messageId, messageText, sessionId, onFeedback }: Feed
           'inline-flex h-7 w-7 items-center justify-center rounded-md',
           'text-muted-foreground hover:bg-muted hover:text-foreground',
           'transition-colors disabled:opacity-50',
-          selected === 'up' && 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400'
+          selected === 'up' && 'bg-green-100 text-green-600'
         )}
-        title="Good response"
+        title={t('feedback.goodResponse')}
       >
         <ThumbsUp className="h-3.5 w-3.5" />
       </button>
@@ -83,9 +85,9 @@ export function Feedback({ messageId, messageText, sessionId, onFeedback }: Feed
           'inline-flex h-7 w-7 items-center justify-center rounded-md',
           'text-muted-foreground hover:bg-muted hover:text-foreground',
           'transition-colors disabled:opacity-50',
-          selected === 'down' && 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'
+          selected === 'down' && 'bg-red-100 text-red-600'
         )}
-        title="Bad response"
+        title={t('feedback.badResponse')}
       >
         <ThumbsDown className="h-3.5 w-3.5" />
       </button>

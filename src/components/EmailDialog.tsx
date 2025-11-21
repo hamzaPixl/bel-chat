@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Mail } from 'lucide-react'
 import { Button } from './ui/button'
 import {
@@ -20,6 +21,7 @@ interface EmailDialogProps {
 }
 
 export function EmailDialog({ open, onOpenChange, onSend, isLoading }: EmailDialogProps) {
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
 
@@ -30,12 +32,12 @@ export function EmailDialog({ open, onOpenChange, onSend, isLoading }: EmailDial
 
   const handleSend = async () => {
     if (!email.trim()) {
-      setError('Please enter an email address')
+      setError(t('email.errorRequired'))
       return
     }
 
     if (!validateEmail(email)) {
-      setError('Please enter a valid email address')
+      setError(t('email.errorInvalid'))
       return
     }
 
@@ -50,19 +52,19 @@ export function EmailDialog({ open, onOpenChange, onSend, isLoading }: EmailDial
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Mail className="h-5 w-5 text-primary" />
-            Send Conversation by Email
+            {t('email.title')}
           </DialogTitle>
           <DialogDescription>
-            Enter your email address to receive a copy of this conversation.
+            {t('email.description')}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
-            <Label htmlFor="email">Email address</Label>
+            <Label htmlFor="email">{t('email.emailLabel')}</Label>
             <Input
               id="email"
               type="email"
-              placeholder="your.email@example.com"
+              placeholder={t('email.emailPlaceholder')}
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value)
@@ -91,7 +93,7 @@ export function EmailDialog({ open, onOpenChange, onSend, isLoading }: EmailDial
             }}
             disabled={isLoading}
           >
-            Cancel
+            {t('email.cancel')}
           </Button>
           <Button
             type="submit"
@@ -99,7 +101,7 @@ export function EmailDialog({ open, onOpenChange, onSend, isLoading }: EmailDial
             disabled={isLoading}
             className="bg-primary text-primary-foreground hover:bg-[var(--belfius-hover)]"
           >
-            {isLoading ? 'Sending...' : 'Send'}
+            {isLoading ? t('email.sending') : t('email.send')}
           </Button>
         </DialogFooter>
       </DialogContent>

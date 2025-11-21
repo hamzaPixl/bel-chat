@@ -1,0 +1,41 @@
+{
+  "sidebar": {
+    "title": "Belfius"
+  },
+  "chat": {
+    "title": "Conversation",
+    "clearConversation": "Are you sure you want to clear the conversation?",
+    "downloadSuccess": "Conversation downloaded",
+    "loadingAgents": "Loading agents...",
+    "noAgents": "No agents available",
+    "messagePlaceholder": "Message {{agentName}}...",
+    "pressEnterHint": "Press Enter to send, Shift + Enter for new line"
+  },
+  "buttons": {
+    "clear": "Clear conversation",
+    "download": "Download conversation",
+    "email": "Send by email"
+  },
+  "email": {
+    "title": "Send Conversation by Email",
+    "description": "Enter your email address to receive a copy of this conversation.",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "your.email@example.com",
+    "cancel": "Cancel",
+    "send": "Send",
+    "sending": "Sending...",
+    "success": "Conversation sent successfully!",
+    "error": "Failed to send email. Please try again.",
+    "errorRequired": "Please enter an email address",
+    "errorInvalid": "Please enter a valid email address"
+  },
+  "feedback": {
+    "goodResponse": "Good response",
+    "badResponse": "Bad response"
+  },
+  "language": {
+    "english": "English",
+    "french": "Français",
+    "dutch": "Nederlands"
+  }
+}

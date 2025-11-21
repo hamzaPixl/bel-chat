@@ -1,5 +1,6 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { nanoid } from 'nanoid'
+import { useTranslation } from 'react-i18next'
 import apiClient, { type Message as ApiMessage, type ChatRequest } from '@/api'
 import type { Agent } from '@/lib/agents'
 
@@ -19,13 +20,16 @@ export type UIMessage = {
 export type ChatStatus = 'awaiting_message' | 'submitted' | 'streaming' | 'error'
 
 export function useChat() {
+  const { i18n } = useTranslation()
   const [messages, setMessages] = useState<UIMessage[]>([])
   const [status, setStatus] = useState<ChatStatus>('awaiting_message')
   const [sessionId, setSessionId] = useState<string>(nanoid())
-  const [language, setLanguage] = useState<string>('en')
 
   // Keep history in API format for subsequent requests
   const historyRef = useRef<ApiMessage[]>([])
+
+  // Get language from i18n
+  const language = i18n.language
 
   const sendMessage = useCallback(async ({ text, agent }: { text: string; agent: Agent }) => {
     // Add user message immediately
@@ -105,17 +109,11 @@ export function useChat() {
     setStatus('awaiting_message')
   }, [])
 
-  const changeLanguage = useCallback((newLanguage: string) => {
-    setLanguage(newLanguage)
-  }, [])
-
   return {
     messages,
     status,
     sessionId,
-    language,
     sendMessage,
     clearMessages,
-    changeLanguage,
   }
 }

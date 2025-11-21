@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { User, Trash2, Download, Mail } from "lucide-react";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { useChat } from "@/hooks/useChat";
+import { useLanguage } from "@/hooks/useLanguage";
 import { agents, type Agent, initializeAgents } from "@/lib/agents";
 import { Sidebar } from "./Sidebar";
 import { Feedback } from "./Feedback";
@@ -28,13 +30,15 @@ import {
 } from "@/components/ai-elements/prompt-input";
 
 export function Chat() {
+  const { t } = useTranslation();
+  const { language, changeLanguage } = useLanguage();
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [agentsList, setAgentsList] = useState<Agent[]>([]);
   const [isLoadingAgents, setIsLoadingAgents] = useState(true);
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
 
-  const { messages, status, sessionId, language, sendMessage, clearMessages, changeLanguage } = useChat();
+  const { messages, status, sessionId, sendMessage, clearMessages } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Initialize agents on mount
@@ -90,7 +94,7 @@ export function Chat() {
   };
 
   const handleClearConversation = () => {
-    if (window.confirm("Are you sure you want to clear the conversation?")) {
+    if (window.confirm(t('chat.clearConversation'))) {
       clearMessages();
     }
   };
@@ -116,10 +120,10 @@ export function Chat() {
 
       await apiClient.sendEmail(emailRequest);
       setEmailDialogOpen(false);
-      alert('Conversation sent successfully!');
+      alert(t('email.success'));
     } catch (error) {
       console.error('Failed to send email:', error);
-      alert('Failed to send email. Please try again.');
+      alert(t('email.error'));
     } finally {
       setIsSendingEmail(false);
     }
@@ -133,7 +137,7 @@ export function Chat() {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
-          <div className="text-lg text-muted-foreground">Loading agents...</div>
+          <div className="text-lg text-muted-foreground">{t('chat.loadingAgents')}</div>
         </div>
       </div>
     );
@@ -143,7 +147,7 @@ export function Chat() {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
-          <div className="text-lg text-destructive">No agents available</div>
+          <div className="text-lg text-destructive">{t('chat.noAgents')}</div>
         </div>
       </div>
     );
@@ -164,9 +168,9 @@ export function Chat() {
           <div className="flex-shrink-0 border-b bg-background px-6 py-4">
             <div className="mx-auto w-full max-w-3xl flex items-center justify-between">
               <div className="flex flex-col gap-1">
-                <h2 className="font-semibold text-lg">Conversation</h2>
+                <h2 className="font-semibold text-lg">{t('chat.title')}</h2>
                 <p className="text-muted-foreground text-sm">
-                  {new Date().toLocaleDateString('en-US', {
+                  {new Date().toLocaleDateString(language, {
                     weekday: 'long',
                     year: 'numeric',
                     month: 'long',
@@ -181,7 +185,7 @@ export function Chat() {
                   size="icon"
                   className="bg-primary text-primary-foreground hover:bg-[var(--belfius-hover)] hover:text-primary-foreground"
                   onClick={handleClearConversation}
-                  title="Clear conversation"
+                  title={t('buttons.clear')}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -190,7 +194,7 @@ export function Chat() {
                   size="icon"
                   className="bg-primary text-primary-foreground hover:bg-[var(--belfius-hover)] hover:text-primary-foreground"
                   onClick={handleDownloadConversation}
-                  title="Download conversation"
+                  title={t('buttons.download')}
                 >
                   <Download className="h-4 w-4" />
                 </Button>
@@ -199,7 +203,7 @@ export function Chat() {
                   size="icon"
                   className="bg-primary text-primary-foreground hover:bg-[var(--belfius-hover)] hover:text-primary-foreground"
                   onClick={() => setEmailDialogOpen(true)}
-                  title="Send by email"
+                  title={t('buttons.email')}
                 >
                   <Mail className="h-4 w-4" />
                 </Button>
@@ -308,13 +312,13 @@ export function Chat() {
             <PromptInput onSubmit={handleSubmit}>
               <PromptInputBody>
                 <PromptInputTextarea
-                  placeholder={`Message ${selectedAgent.name}...`}
+                  placeholder={t('chat.messagePlaceholder', { agentName: selectedAgent.name })}
                 />
                 <PromptInputSubmit status={status} />
               </PromptInputBody>
             </PromptInput>
             <p className="text-center text-xs text-muted-foreground">
-              Press Enter to send, Shift + Enter for new line
+              {t('chat.pressEnterHint')}
             </p>
           </div>
         </div>

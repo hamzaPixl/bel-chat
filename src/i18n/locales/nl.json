@@ -1,0 +1,41 @@
+{
+  "sidebar": {
+    "title": "Belfius"
+  },
+  "chat": {
+    "title": "Gesprek",
+    "clearConversation": "Weet u zeker dat u het gesprek wilt wissen?",
+    "downloadSuccess": "Gesprek gedownload",
+    "loadingAgents": "Agents laden...",
+    "noAgents": "Geen agents beschikbaar",
+    "messagePlaceholder": "Bericht {{agentName}}...",
+    "pressEnterHint": "Druk op Enter om te verzenden, Shift + Enter voor een nieuwe regel"
+  },
+  "buttons": {
+    "clear": "Gesprek wissen",
+    "download": "Gesprek downloaden",
+    "email": "Verzenden per e-mail"
+  },
+  "email": {
+    "title": "Gesprek per e-mail verzenden",
+    "description": "Voer uw e-mailadres in om een kopie van dit gesprek te ontvangen.",
+    "emailLabel": "E-mailadres",
+    "emailPlaceholder": "uw.email@voorbeeld.com",
+    "cancel": "Annuleren",
+    "send": "Verzenden",
+    "sending": "Verzenden...",
+    "success": "Gesprek succesvol verzonden!",
+    "error": "Verzenden van e-mail mislukt. Probeer het opnieuw.",
+    "errorRequired": "Voer een e-mailadres in",
+    "errorInvalid": "Voer een geldig e-mailadres in"
+  },
+  "feedback": {
+    "goodResponse": "Goed antwoord",
+    "badResponse": "Slecht antwoord"
+  },
+  "language": {
+    "english": "English",
+    "french": "Français",
+    "dutch": "Nederlands"
+  }
+}
