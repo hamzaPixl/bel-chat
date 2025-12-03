@@ -29,7 +29,13 @@
   },
   "sidebar": {
     "title": "Belfius",
-    "backToHome": "Terug naar Home"
+    "backToHome": "Terug naar Home",
+    "agentUnavailable": "Momenteel niet beschikbaar"
+  },
+  "maintenance": {
+    "title": "In onderhoud",
+    "description": "We voeren momenteel gepland onderhoud uit om onze diensten te verbeteren. Probeer het later opnieuw.",
+    "hint": "Onze excuses voor het ongemak."
   },
   "chat": {
     "title": "Gesprek",

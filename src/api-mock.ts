@@ -1,27 +1,56 @@
-import type { Agent, Message, AgentInfoResponse, ChatRequest, ChatResponse, EmailRequest, EmailResponse, Feedback, FeedbackResponse, HealthResponse } from './api';
+import type {
+  Agent,
+  Message,
+  AgentInfoResponse,
+  ChatRequest,
+  ChatResponse,
+  EmailRequest,
+  EmailResponse,
+  Feedback,
+  FeedbackResponse,
+  HealthResponse,
+} from "./api";
 
-// Mock agents
+// Mock agents - set available to false to test unavailable state
 export const mockAgents: Agent[] = [
   {
     id: "pension",
     name: "Pension Assistant",
     description: "Expert in pension planning and retirement savings",
+    available: true,
   },
   {
     id: "investment",
     name: "Investment Advisor",
     description: "Helps with investment strategies and portfolio management",
+    available: false, // Example: this agent is unavailable
+  },
+  {
+    id: "tax",
+    name: "Tax Advisor",
+    description: "Helps with tax planning and optimization",
+    available: true,
   },
 ];
+
+// Mock health - set available to false to test maintenance page
+const mockHealth: HealthResponse = {
+  status: "ok",
+  name: "Mock API",
+  version: "1.0.0",
+  available: false, // Set to false to show maintenance page
+};
 
 // Mock responses
 const mockResponses: Record<string, Message> = {
   default: {
-    content: "I can help you with your pension questions. What would you like to know?",
+    content:
+      "I can help you with your pension questions. What would you like to know?",
     sender: "assistant",
   },
   pension: {
-    content: "The Belgian pension system has three pillars: the statutory pension, supplementary pensions, and individual pension savings.",
+    content:
+      "The Belgian pension system has three pillars: the statutory pension, supplementary pensions, and individual pension savings.",
     long_content: `The Belgian pension system has three pillars:
 
 **First Pillar - Statutory Pension**
@@ -40,14 +69,26 @@ Personal savings plans with tax advantages:
 
 Each pillar has different tax implications and benefits. Would you like me to explain any of these in more detail?`,
     resources: [
-      { title: "Belgian Pension Guide 2024", link: "https://example.com/pension-guide", page_number: 12 },
-      { title: "Tax Benefits Overview", link: "https://example.com/tax-benefits", page_number: 5 },
-      { title: "Retirement Calculator", link: "https://example.com/calculator" },
+      {
+        title: "Belgian Pension Guide 2024",
+        link: "https://example.com/pension-guide",
+        page_number: 12,
+      },
+      {
+        title: "Tax Benefits Overview",
+        link: "https://example.com/tax-benefits",
+        page_number: 5,
+      },
+      {
+        title: "Retirement Calculator",
+        link: "https://example.com/calculator",
+      },
     ],
     sender: "assistant",
   },
   retirement: {
-    content: "The legal retirement age in Belgium is currently 65, but will increase to 66 in 2025 and 67 in 2030.",
+    content:
+      "The legal retirement age in Belgium is currently 65, but will increase to 66 in 2025 and 67 in 2030.",
     long_content: `The legal retirement age in Belgium is currently 65, but will increase to 66 in 2025 and 67 in 2030.
 
 **Early Retirement Options**
@@ -72,13 +113,21 @@ Your pension is calculated using the formula:
 
 Would you like to know more about any specific aspect?`,
     resources: [
-      { title: "Retirement Age Changes", link: "https://example.com/retirement-age", page_number: 3 },
-      { title: "Early Retirement Conditions", link: "https://example.com/early-retirement" },
+      {
+        title: "Retirement Age Changes",
+        link: "https://example.com/retirement-age",
+        page_number: 3,
+      },
+      {
+        title: "Early Retirement Conditions",
+        link: "https://example.com/early-retirement",
+      },
     ],
     sender: "assistant",
   },
   savings: {
-    content: "Pension savings in Belgium offer significant tax advantages. You can save up to €1,020 (30% tax reduction) or €1,310 (25% tax reduction) per year.",
+    content:
+      "Pension savings in Belgium offer significant tax advantages. You can save up to €1,020 (30% tax reduction) or €1,310 (25% tax reduction) per year.",
     long_content: `Pension savings in Belgium offer significant tax advantages.
 
 **Two Saving Limits**
@@ -109,9 +158,17 @@ Would you like to know more about any specific aspect?`,
 3. Consider your risk tolerance when selecting products
 4. Review your strategy annually`,
     resources: [
-      { title: "Pension Savings Comparison 2024", link: "https://example.com/savings-comparison", page_number: 8 },
+      {
+        title: "Pension Savings Comparison 2024",
+        link: "https://example.com/savings-comparison",
+        page_number: 8,
+      },
       { title: "Tax Calculator", link: "https://example.com/tax-calc" },
-      { title: "Fund Performance Report", link: "https://example.com/fund-report", page_number: 15 },
+      {
+        title: "Fund Performance Report",
+        link: "https://example.com/fund-report",
+        page_number: 15,
+      },
     ],
     sender: "assistant",
   },
@@ -120,13 +177,25 @@ Would you like to know more about any specific aspect?`,
 function getMockResponse(userMessage: string): Message {
   const lowerMessage = userMessage.toLowerCase();
 
-  if (lowerMessage.includes("pillar") || lowerMessage.includes("system") || lowerMessage.includes("how does")) {
+  if (
+    lowerMessage.includes("pillar") ||
+    lowerMessage.includes("system") ||
+    lowerMessage.includes("how does")
+  ) {
     return mockResponses.pension;
   }
-  if (lowerMessage.includes("retire") || lowerMessage.includes("age") || lowerMessage.includes("when")) {
+  if (
+    lowerMessage.includes("retire") ||
+    lowerMessage.includes("age") ||
+    lowerMessage.includes("when")
+  ) {
     return mockResponses.retirement;
   }
-  if (lowerMessage.includes("saving") || lowerMessage.includes("tax") || lowerMessage.includes("benefit")) {
+  if (
+    lowerMessage.includes("saving") ||
+    lowerMessage.includes("tax") ||
+    lowerMessage.includes("benefit")
+  ) {
     return mockResponses.savings;
   }
 
@@ -136,7 +205,7 @@ function getMockResponse(userMessage: string): Message {
 // Mock API client
 export const mockApi = {
   async getHealth(): Promise<HealthResponse> {
-    return { status: "ok", name: "Mock API", version: "1.0.0" };
+    return mockHealth;
   },
 
   async sendChatMessage(chatRequest: ChatRequest): Promise<ChatResponse> {
@@ -148,10 +217,7 @@ export const mockApi = {
 
     return {
       success: true,
-      history: [
-        ...chatRequest.history,
-        mockResponse,
-      ],
+      history: [...chatRequest.history, mockResponse],
     };
   },
 

@@ -6,6 +6,7 @@ export interface Agent {
   avatar: string
   description: string
   color: string
+  available: boolean
 }
 
 // Default avatar and color mapping for agents
@@ -25,6 +26,7 @@ function transformAgent(apiAgent: ApiAgent): Agent {
     ...apiAgent,
     avatar: visuals.avatar,
     color: visuals.color,
+    available: apiAgent.available ?? true,
   }
 }
 
@@ -43,6 +45,7 @@ export async function fetchAgents(): Promise<Agent[]> {
         avatar: '🤖',
         description: 'General purpose AI assistant for various tasks',
         color: 'bg-blue-500',
+        available: true,
       },
     ]
   }

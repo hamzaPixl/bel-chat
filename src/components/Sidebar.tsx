@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ChevronLeft, Home } from 'lucide-react'
+import { ChevronLeft, Home, AlertTriangle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { agents, type Agent } from '@/lib/agents'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip'
@@ -54,33 +54,54 @@ export function Sidebar({ selectedAgent, onSelectAgent, onBackToHome }: SidebarP
         <div className="space-y-1">
           {agents.map((agent) => {
             const isSelected = selectedAgent.id === agent.id
+            const isUnavailable = agent.available === false
 
             const agentButton = (
               <button
                 key={agent.id}
-                onClick={() => onSelectAgent(agent)}
+                onClick={() => !isUnavailable && onSelectAgent(agent)}
+                disabled={isUnavailable}
                 className={cn(
                   'w-full rounded-lg p-3 text-left transition-colors',
-                  'hover:bg-primary/10',
-                  isSelected && 'bg-primary/10 border border-primary/20',
+                  isUnavailable
+                    ? 'opacity-60 cursor-not-allowed'
+                    : 'hover:bg-primary/10',
+                  isSelected && !isUnavailable && 'bg-primary/10 border border-primary/20',
                   isCollapsed && 'flex items-center justify-center p-2'
                 )}
               >
                 <div className={cn('flex items-center gap-3', isCollapsed && 'justify-center')}>
-                  <Avatar className="h-8 w-8 shrink-0">
-                    <AvatarFallback className={cn('text-lg', agent.color)}>
-                      {agent.avatar}
-                    </AvatarFallback>
-                  </Avatar>
+                  <div className="relative">
+                    <Avatar className="h-8 w-8 shrink-0">
+                      <AvatarFallback className={cn('text-lg', isUnavailable ? 'bg-muted' : agent.color)}>
+                        {agent.avatar}
+                      </AvatarFallback>
+                    </Avatar>
+                    {isUnavailable && !isCollapsed && (
+                      <div className="absolute -top-1 -right-1 bg-orange-500 rounded-full p-0.5">
+                        <AlertTriangle className="h-2.5 w-2.5 text-white" />
+                      </div>
+                    )}
+                  </div>
 
                   {!isCollapsed && (
                     <div className="flex-1 overflow-hidden">
-                      <div className="font-medium text-sm truncate">
+                      <div className={cn(
+                        "font-medium text-sm truncate",
+                        isUnavailable && "text-muted-foreground"
+                      )}>
                         {agent.name}
                       </div>
-                      <div className="text-xs text-muted-foreground truncate">
-                        {agent.description}
-                      </div>
+                      {isUnavailable ? (
+                        <div className="text-xs text-orange-600 truncate flex items-center gap-1">
+                          <AlertTriangle className="h-3 w-3" />
+                          {t('sidebar.agentUnavailable')}
+                        </div>
+                      ) : (
+                        <div className="text-xs text-muted-foreground truncate">
+                          {agent.description}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -95,7 +116,11 @@ export function Sidebar({ selectedAgent, onSelectAgent, onBackToHome }: SidebarP
                       {agentButton}
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>{agent.description}</p>
+                      {isUnavailable ? (
+                        <p className="text-orange-600">{t('sidebar.agentUnavailable')}</p>
+                      ) : (
+                        <p>{agent.description}</p>
+                      )}
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>

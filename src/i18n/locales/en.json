@@ -29,7 +29,13 @@
   },
   "sidebar": {
     "title": "Belfius",
-    "backToHome": "Back to Home"
+    "backToHome": "Back to Home",
+    "agentUnavailable": "Currently unavailable"
+  },
+  "maintenance": {
+    "title": "Under Maintenance",
+    "description": "We're currently performing scheduled maintenance to improve our services. Please try again later.",
+    "hint": "We apologize for any inconvenience."
   },
   "chat": {
     "title": "Conversation",
