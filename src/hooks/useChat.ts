@@ -1,7 +1,7 @@
-import { useState, useCallback, useRef, useEffect } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { nanoid } from 'nanoid'
 import { useTranslation } from 'react-i18next'
-import apiClient, { type Message as ApiMessage, type ChatRequest } from '@/api'
+import apiClient, { type Message as ApiMessage, type ChatRequest, type Ressource } from '@/api'
 import type { Agent } from '@/lib/agents'
 
 export type MessagePart = {
@@ -15,6 +15,8 @@ export type UIMessage = {
   parts: MessagePart[]
   createdAt: Date
   agentId?: string
+  longContent?: string
+  resources?: Ressource[]
 }
 
 export type ChatStatus = 'awaiting_message' | 'submitted' | 'streaming' | 'error'
@@ -74,6 +76,8 @@ export function useChat() {
             parts: [{ type: 'text', text: lastMessage.content }],
             createdAt: new Date(),
             agentId: agent.id,
+            longContent: lastMessage.long_content,
+            resources: lastMessage.resources,
           }
 
           setMessages((prev) => [...prev, assistantMessage])

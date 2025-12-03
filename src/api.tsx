@@ -1,5 +1,12 @@
+export interface Ressource {
+  title: string;
+  link: string;
+  page_number?: number;
+}
 export interface Message {
   content: string;
+  long_content?: string;
+  resources?: Ressource[];
   sender: string;
 }
 export interface ChatRequest {
@@ -51,7 +58,8 @@ export interface Agent {
   description: string;
 }
 // Base URL of your FastAPI backend
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8882/api";
+const BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8882/api";
 // API client class
 class ApiClient {
   async getHealth(): Promise<HealthResponse> {

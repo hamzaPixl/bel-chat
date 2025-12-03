@@ -11,16 +11,13 @@ import { Sidebar } from "./Sidebar";
 import { Feedback } from "./Feedback";
 import { EmailDialog } from "./EmailDialog";
 import { LanguageSelector } from "./LanguageSelector";
+import { ExpandableMessage } from "./ExpandableMessage";
+import { ResourceList } from "./ResourceList";
 import apiClient, { type Message as ApiMessage, type EmailRequest } from "@/api";
 import {
   Conversation,
   ConversationContent,
 } from "@/components/ai-elements/conversation";
-import {
-  Message,
-  MessageContent,
-  MessageResponse,
-} from "@/components/ai-elements/message";
 import {
   PromptInput,
   PromptInputBody,
@@ -271,17 +268,15 @@ export function Chat({ initialAgent, onBackToHome }: ChatProps) {
                       )}
 
                       <div className="flex-1 flex flex-col gap-2">
-                        <Message from={message.role}>
-                          <MessageContent>
-                            {message.role === "assistant" ? (
-                              <MessageResponse>{textContent}</MessageResponse>
-                            ) : (
-                              <p className="whitespace-pre-wrap text-sm">
-                                {textContent}
-                              </p>
-                            )}
-                          </MessageContent>
-                        </Message>
+                        <ExpandableMessage
+                          content={textContent}
+                          longContent={message.longContent}
+                          role={message.role}
+                        />
+
+                        {message.role === "assistant" && message.resources && message.resources.length > 0 && (
+                          <ResourceList resources={message.resources} />
+                        )}
 
                         {message.role === "assistant" && (
                           <Feedback

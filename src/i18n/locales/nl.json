@@ -40,7 +40,10 @@
     "loadingAgents": "Agents laden...",
     "noAgents": "Geen agents beschikbaar",
     "messagePlaceholder": "Typ uw bericht...",
-    "pressEnterHint": "Druk op Enter om te verzenden, Shift + Enter voor een nieuwe regel"
+    "pressEnterHint": "Druk op Enter om te verzenden, Shift + Enter voor een nieuwe regel",
+    "showMore": "Meer tonen",
+    "showLess": "Minder tonen",
+    "resources": "Bronnen"
   },
   "buttons": {
     "clear": "Gesprek wissen",

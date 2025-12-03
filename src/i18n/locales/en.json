@@ -40,7 +40,10 @@
     "loadingAgents": "Loading agents...",
     "noAgents": "No agents available",
     "messagePlaceholder": "Type your message...",
-    "pressEnterHint": "Press Enter to send, Shift + Enter for new line"
+    "pressEnterHint": "Press Enter to send, Shift + Enter for new line",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "resources": "Resources"
   },
   "buttons": {
     "clear": "Clear conversation",

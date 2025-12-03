@@ -40,7 +40,10 @@
     "loadingAgents": "Chargement des agents...",
     "noAgents": "Aucun agent disponible",
     "messagePlaceholder": "Tapez votre message...",
-    "pressEnterHint": "Appuyez sur Entrée pour envoyer, Shift + Entrée pour une nouvelle ligne"
+    "pressEnterHint": "Appuyez sur Entrée pour envoyer, Shift + Entrée pour une nouvelle ligne",
+    "showMore": "Voir plus",
+    "showLess": "Voir moins",
+    "resources": "Ressources"
   },
   "buttons": {
     "clear": "Effacer la conversation",
