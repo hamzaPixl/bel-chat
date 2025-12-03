@@ -1,6 +1,35 @@
 {
+  "home": {
+    "title": "Pensioen Assistent",
+    "hero": {
+      "title": "Uw Belfius Pensioen Assistent",
+      "description": "Krijg deskundig advies over uw pensioenplanning, pensioensparen en financiële toekomst. Onze AI-gestuurde assistenten helpen u weloverwogen beslissingen te nemen."
+    },
+    "agents": {
+      "title": "Kies Uw Assistent",
+      "selected": "Geselecteerd"
+    },
+    "startButton": "Start Gesprek",
+    "startHint": "U gaat chatten met {{agentName}}",
+    "features": {
+      "secure": {
+        "title": "Veilig en Privé",
+        "description": "Uw gesprekken zijn beschermd met bankbeveiliging."
+      },
+      "fast": {
+        "title": "Directe Antwoorden",
+        "description": "Krijg onmiddellijk antwoord op uw pensioenvragen."
+      },
+      "expert": {
+        "title": "Deskundige Kennis",
+        "description": "Aangedreven door Belfius pensioenexpertise."
+      }
+    },
+    "footer": "© 2024 Belfius Bank. Alle rechten voorbehouden."
+  },
   "sidebar": {
-    "title": "Belfius"
+    "title": "Belfius",
+    "backToHome": "Terug naar Home"
   },
   "chat": {
     "title": "Gesprek",
@@ -30,6 +59,7 @@
     "errorInvalid": "Voer een geldig e-mailadres in"
   },
   "feedback": {
+    "copy": "Kopiëren naar klembord",
     "goodResponse": "Goed antwoord",
     "badResponse": "Slecht antwoord"
   },

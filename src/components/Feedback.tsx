@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ThumbsUp, ThumbsDown } from 'lucide-react'
+import { ThumbsUp, ThumbsDown, Copy, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import apiClient from '@/api'
 
@@ -15,6 +15,17 @@ export function Feedback({ messageId, messageText, sessionId, onFeedback }: Feed
   const { t } = useTranslation()
   const [selected, setSelected] = useState<'up' | 'down' | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(messageText)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (error) {
+      console.error('Failed to copy:', error)
+    }
+  }
 
   const handleThumbsUp = async () => {
     if (isSubmitting) return
@@ -64,6 +75,19 @@ export function Feedback({ messageId, messageText, sessionId, onFeedback }: Feed
 
   return (
     <div className="flex items-center gap-1">
+      <button
+        onClick={handleCopy}
+        className={cn(
+          'inline-flex h-7 w-7 items-center justify-center rounded-md',
+          'text-muted-foreground hover:bg-muted hover:text-foreground',
+          'transition-colors',
+          copied && 'text-green-600'
+        )}
+        title={t('feedback.copy')}
+      >
+        {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+      </button>
+
       <button
         onClick={handleThumbsUp}
         disabled={isSubmitting}

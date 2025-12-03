@@ -35,7 +35,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import type { ChatStatus, FileUIPart } from "ai";
+import type { FileUIPart } from "ai";
+
+export type ChatStatus = 'awaiting_message' | 'submitted' | 'streaming' | 'error' | 'ready' | 'in_progress';
 import {
   CornerDownLeftIcon,
   ImageIcon,

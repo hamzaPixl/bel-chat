@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { useChat } from "@/hooks/useChat";
-import { useLanguage } from "@/hooks/useLanguage";
+import { useLanguage, type Language } from "@/hooks/useLanguage";
 import { agents, type Agent, initializeAgents } from "@/lib/agents";
 import { Sidebar } from "./Sidebar";
 import { Feedback } from "./Feedback";
@@ -29,19 +29,24 @@ import {
   type PromptInputMessage,
 } from "@/components/ai-elements/prompt-input";
 
-export function Chat() {
+interface ChatProps {
+  initialAgent?: Agent | null;
+  onBackToHome?: () => void;
+}
+
+export function Chat({ initialAgent, onBackToHome }: ChatProps) {
   const { t } = useTranslation();
   const { language, changeLanguage } = useLanguage();
-  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(initialAgent || null);
   const [agentsList, setAgentsList] = useState<Agent[]>([]);
-  const [isLoadingAgents, setIsLoadingAgents] = useState(true);
+  const [isLoadingAgents, setIsLoadingAgents] = useState(!initialAgent);
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
 
   const { messages, status, sessionId, sendMessage, clearMessages } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Initialize agents on mount
+  // Initialize agents on mount (only if no initial agent provided)
   useEffect(() => {
     async function loadAgents() {
       setIsLoadingAgents(true);
@@ -52,7 +57,15 @@ export function Chat() {
       }
       setIsLoadingAgents(false);
     }
-    loadAgents();
+
+    if (!initialAgent) {
+      loadAgents();
+    } else {
+      // Still load agents list for sidebar
+      initializeAgents().then(() => {
+        setAgentsList([...agents]);
+      });
+    }
   }, []);
 
   const scrollToBottom = () => {
@@ -159,6 +172,7 @@ export function Chat() {
       <Sidebar
         selectedAgent={selectedAgent}
         onSelectAgent={setSelectedAgent}
+        onBackToHome={onBackToHome}
       />
 
       {/* Main Chat Area */}
@@ -179,7 +193,7 @@ export function Chat() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <LanguageSelector value={language} onChange={changeLanguage} />
+                <LanguageSelector value={language} onChange={(val) => changeLanguage(val as Language)} />
                 <Button
                   variant="ghost"
                   size="icon"

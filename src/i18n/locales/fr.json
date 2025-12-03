@@ -1,6 +1,35 @@
 {
+  "home": {
+    "title": "Assistant Pension",
+    "hero": {
+      "title": "Votre Assistant Pension Belfius",
+      "description": "Obtenez des conseils d'experts sur la planification de votre pension, votre épargne-retraite et votre avenir financier. Nos assistants IA sont là pour vous aider à prendre des décisions éclairées."
+    },
+    "agents": {
+      "title": "Choisissez Votre Assistant",
+      "selected": "Sélectionné"
+    },
+    "startButton": "Démarrer la Conversation",
+    "startHint": "Vous allez discuter avec {{agentName}}",
+    "features": {
+      "secure": {
+        "title": "Sécurisé et Privé",
+        "description": "Vos conversations sont protégées avec une sécurité de niveau bancaire."
+      },
+      "fast": {
+        "title": "Réponses Instantanées",
+        "description": "Obtenez des réponses immédiates à vos questions sur la pension."
+      },
+      "expert": {
+        "title": "Expertise",
+        "description": "Alimenté par l'expertise pension de Belfius."
+      }
+    },
+    "footer": "© 2024 Belfius Bank. Tous droits réservés."
+  },
   "sidebar": {
-    "title": "Belfius"
+    "title": "Belfius",
+    "backToHome": "Retour à l'accueil"
   },
   "chat": {
     "title": "Conversation",
@@ -30,6 +59,7 @@
     "errorInvalid": "Veuillez entrer une adresse email valide"
   },
   "feedback": {
+    "copy": "Copier dans le presse-papiers",
     "goodResponse": "Bonne réponse",
     "badResponse": "Mauvaise réponse"
   },

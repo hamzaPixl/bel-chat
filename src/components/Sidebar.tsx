@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { ChevronLeft, Home } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { agents, type Agent } from '@/lib/agents'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip'
@@ -8,9 +9,11 @@ import { Avatar, AvatarFallback } from './ui/avatar'
 interface SidebarProps {
   selectedAgent: Agent
   onSelectAgent: (agent: Agent) => void
+  onBackToHome?: () => void
 }
 
-export function Sidebar({ selectedAgent, onSelectAgent }: SidebarProps) {
+export function Sidebar({ selectedAgent, onSelectAgent, onBackToHome }: SidebarProps) {
+  const { t } = useTranslation()
   const [isCollapsed, setIsCollapsed] = useState(false)
 
   return (
@@ -103,6 +106,45 @@ export function Sidebar({ selectedAgent, onSelectAgent }: SidebarProps) {
           })}
         </div>
       </div>
+
+      {/* Home Button - Bottom */}
+      {onBackToHome && (
+        <div className="border-t p-2">
+          {isCollapsed ? (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={onBackToHome}
+                    className={cn(
+                      'w-full rounded-lg p-2 flex items-center justify-center',
+                      'text-muted-foreground hover:bg-primary/10 hover:text-foreground',
+                      'transition-colors'
+                    )}
+                  >
+                    <Home className="h-5 w-5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right">
+                  <p>{t('sidebar.backToHome')}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : (
+            <button
+              onClick={onBackToHome}
+              className={cn(
+                'w-full rounded-lg p-3 flex items-center gap-3',
+                'text-muted-foreground hover:bg-primary/10 hover:text-foreground',
+                'transition-colors'
+              )}
+            >
+              <Home className="h-5 w-5" />
+              <span className="font-medium text-sm">{t('sidebar.backToHome')}</span>
+            </button>
+          )}
+        </div>
+      )}
     </div>
   )
 }
