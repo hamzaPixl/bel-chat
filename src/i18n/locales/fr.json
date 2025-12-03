@@ -33,11 +33,13 @@
   },
   "chat": {
     "title": "Conversation",
+    "emptyTitle": "Comment puis-je vous aider aujourd'hui ?",
+    "emptyDescription": "Posez-moi vos questions sur votre pension ou votre planification de retraite.",
     "clearConversation": "Êtes-vous sûr de vouloir effacer la conversation ?",
     "downloadSuccess": "Conversation téléchargée",
     "loadingAgents": "Chargement des agents...",
     "noAgents": "Aucun agent disponible",
-    "messagePlaceholder": "Message {{agentName}}...",
+    "messagePlaceholder": "Tapez votre message...",
     "pressEnterHint": "Appuyez sur Entrée pour envoyer, Shift + Entrée pour une nouvelle ligne"
   },
   "buttons": {

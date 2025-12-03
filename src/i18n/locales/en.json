@@ -33,11 +33,13 @@
   },
   "chat": {
     "title": "Conversation",
+    "emptyTitle": "How can I help you today?",
+    "emptyDescription": "Ask me anything about your pension or retirement planning.",
     "clearConversation": "Are you sure you want to clear the conversation?",
     "downloadSuccess": "Conversation downloaded",
     "loadingAgents": "Loading agents...",
     "noAgents": "No agents available",
-    "messagePlaceholder": "Message {{agentName}}...",
+    "messagePlaceholder": "Type your message...",
     "pressEnterHint": "Press Enter to send, Shift + Enter for new line"
   },
   "buttons": {

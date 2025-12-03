@@ -228,96 +228,85 @@ export function Chat({ initialAgent, onBackToHome }: ChatProps) {
 
         {/* Conversation - Scrollable area */}
         <div className="flex-1 overflow-hidden">
-          <Conversation className="h-full">
-            <ConversationContent className="mx-auto w-full max-w-3xl pb-4">
-              {messages.length === 0 ? (
-                <div className="flex h-full flex-col items-center justify-center gap-4 px-4 text-center">
-                  <Avatar className="h-16 w-16">
-                    <AvatarFallback
-                      className={cn("text-3xl", selectedAgent.color)}
-                    >
-                      {selectedAgent.avatar}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="space-y-2">
-                    <h1 className="text-2xl font-semibold tracking-tight">
-                      {selectedAgent.name}
-                    </h1>
-                    <p className="text-muted-foreground max-w-md">
-                      {selectedAgent.description}
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  {messages.map((message) => {
-                    // Get text content from message parts
-                    const textContent = message.parts
-                      .filter((part) => part.type === "text")
-                      .map((part) => part.text)
-                      .join("");
+          {messages.length === 0 ? (
+            <div className="flex h-full flex-col items-center justify-center gap-2 px-4 text-center">
+              <h1 className="text-2xl font-semibold tracking-tight">
+                {t('chat.emptyTitle')}
+              </h1>
+              <p className="text-muted-foreground max-w-md">
+                {t('chat.emptyDescription')}
+              </p>
+            </div>
+          ) : (
+            <Conversation className="h-full">
+              <ConversationContent className="mx-auto w-full max-w-3xl pb-4">
+                {messages.map((message) => {
+                  // Get text content from message parts
+                  const textContent = message.parts
+                    .filter((part) => part.type === "text")
+                    .map((part) => part.text)
+                    .join("");
 
-                    // Get agent for this message
-                    const messageAgent = message.agentId
-                      ? agentsList.find((a) => a.id === message.agentId) ||
-                        selectedAgent
-                      : selectedAgent;
+                  // Get agent for this message
+                  const messageAgent = message.agentId
+                    ? agentsList.find((a) => a.id === message.agentId) ||
+                      selectedAgent
+                    : selectedAgent;
 
-                    return (
-                      <div key={message.id} className="flex w-full gap-4">
+                  return (
+                    <div key={message.id} className="flex w-full gap-4">
+                      {message.role === "assistant" && (
+                        <Avatar className="h-8 w-8 shrink-0">
+                          <AvatarFallback
+                            className={cn(
+                              "flex items-center justify-center",
+                              messageAgent.color
+                            )}
+                          >
+                            <span className="text-lg">
+                              {messageAgent.avatar}
+                            </span>
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
+
+                      <div className="flex-1 flex flex-col gap-2">
+                        <Message from={message.role}>
+                          <MessageContent>
+                            {message.role === "assistant" ? (
+                              <MessageResponse>{textContent}</MessageResponse>
+                            ) : (
+                              <p className="whitespace-pre-wrap text-sm">
+                                {textContent}
+                              </p>
+                            )}
+                          </MessageContent>
+                        </Message>
+
                         {message.role === "assistant" && (
-                          <Avatar className="h-8 w-8 shrink-0">
-                            <AvatarFallback
-                              className={cn(
-                                "flex items-center justify-center",
-                                messageAgent.color
-                              )}
-                            >
-                              <span className="text-lg">
-                                {messageAgent.avatar}
-                              </span>
-                            </AvatarFallback>
-                          </Avatar>
-                        )}
-
-                        <div className="flex-1 flex flex-col gap-2">
-                          <Message from={message.role}>
-                            <MessageContent>
-                              {message.role === "assistant" ? (
-                                <MessageResponse>{textContent}</MessageResponse>
-                              ) : (
-                                <p className="whitespace-pre-wrap text-sm">
-                                  {textContent}
-                                </p>
-                              )}
-                            </MessageContent>
-                          </Message>
-
-                          {message.role === "assistant" && (
-                            <Feedback
-                              messageId={message.id}
-                              messageText={textContent}
-                              sessionId={sessionId}
-                              onFeedback={handleFeedback}
-                            />
-                          )}
-                        </div>
-
-                        {message.role === "user" && (
-                          <Avatar className="h-8 w-8 shrink-0">
-                            <AvatarFallback className="flex items-center justify-center bg-primary text-primary-foreground">
-                              <User className="h-4 w-4" />
-                            </AvatarFallback>
-                          </Avatar>
+                          <Feedback
+                            messageId={message.id}
+                            messageText={textContent}
+                            sessionId={sessionId}
+                            onFeedback={handleFeedback}
+                          />
                         )}
                       </div>
-                    );
-                  })}
-                  <div ref={messagesEndRef} />
-                </>
-              )}
-            </ConversationContent>
-          </Conversation>
+
+                      {message.role === "user" && (
+                        <Avatar className="h-8 w-8 shrink-0">
+                          <AvatarFallback className="flex items-center justify-center bg-primary text-primary-foreground">
+                            <User className="h-4 w-4" />
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
+                    </div>
+                  );
+                })}
+                <div ref={messagesEndRef} />
+              </ConversationContent>
+            </Conversation>
+          )}
         </div>
 
         {/* Input Island - Fixed at bottom */}
@@ -326,7 +315,7 @@ export function Chat({ initialAgent, onBackToHome }: ChatProps) {
             <PromptInput onSubmit={handleSubmit}>
               <PromptInputBody>
                 <PromptInputTextarea
-                  placeholder={t('chat.messagePlaceholder', { agentName: selectedAgent.name })}
+                  placeholder={t('chat.messagePlaceholder')}
                 />
                 <PromptInputSubmit status={status} />
               </PromptInputBody>

@@ -33,11 +33,13 @@
   },
   "chat": {
     "title": "Gesprek",
+    "emptyTitle": "Hoe kan ik u vandaag helpen?",
+    "emptyDescription": "Stel me al uw vragen over uw pensioen of pensioenplanning.",
     "clearConversation": "Weet u zeker dat u het gesprek wilt wissen?",
     "downloadSuccess": "Gesprek gedownload",
     "loadingAgents": "Agents laden...",
     "noAgents": "Geen agents beschikbaar",
-    "messagePlaceholder": "Bericht {{agentName}}...",
+    "messagePlaceholder": "Typ uw bericht...",
     "pressEnterHint": "Druk op Enter om te verzenden, Shift + Enter voor een nieuwe regel"
   },
   "buttons": {
