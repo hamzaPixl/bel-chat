@@ -38,7 +38,7 @@ const mockHealth: HealthResponse = {
   status: "ok",
   name: "Mock API",
   version: "1.0.0",
-  available: false, // Set to false to show maintenance page
+  available: true, // Set to false to show maintenance page
 };
 
 // Mock responses
