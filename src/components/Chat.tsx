@@ -13,7 +13,8 @@ import { EmailDialog } from "./EmailDialog";
 import { LanguageSelector } from "./LanguageSelector";
 import { ExpandableMessage } from "./ExpandableMessage";
 import { ResourceList } from "./ResourceList";
-import apiClient, { type Message as ApiMessage, type EmailRequest } from "@/api";
+import { FilePreview } from "./FilePreview";
+import apiClient, { type Message as ApiMessage, type EmailRequest, type Ressource } from "@/api";
 import {
   Conversation,
   ConversationContent,
@@ -39,6 +40,7 @@ export function Chat({ initialAgent, onBackToHome }: ChatProps) {
   const [isLoadingAgents, setIsLoadingAgents] = useState(!initialAgent);
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [selectedResource, setSelectedResource] = useState<Ressource | null>(null);
 
   const { messages, status, sessionId, sendMessage, clearMessages } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -172,8 +174,13 @@ export function Chat({ initialAgent, onBackToHome }: ChatProps) {
         onBackToHome={onBackToHome}
       />
 
-      {/* Main Chat Area */}
-      <div className="flex flex-col flex-1 min-w-0">
+      {/* Main Content Area */}
+      <div className="flex flex-1 min-w-0">
+        {/* Chat Area */}
+        <div className={cn(
+          "flex flex-col flex-1 min-w-0 transition-all duration-300",
+          selectedResource && "lg:w-1/2"
+        )}>
         {/* Top Bar - Only shown when there are messages */}
         {messages.length > 0 && (
           <div className="flex-shrink-0 border-b bg-background px-6 py-4">
@@ -275,7 +282,10 @@ export function Chat({ initialAgent, onBackToHome }: ChatProps) {
                         />
 
                         {message.role === "assistant" && message.resources && message.resources.length > 0 && (
-                          <ResourceList resources={message.resources} />
+                          <ResourceList
+                            resources={message.resources}
+                            onResourceClick={setSelectedResource}
+                          />
                         )}
 
                         {message.role === "assistant" && (
@@ -320,6 +330,16 @@ export function Chat({ initialAgent, onBackToHome }: ChatProps) {
             </p>
           </div>
         </div>
+        </div>
+
+        {/* File Preview Panel */}
+        {selectedResource && (
+          <FilePreview
+            resource={selectedResource}
+            onClose={() => setSelectedResource(null)}
+            className="hidden lg:flex w-1/2"
+          />
+        )}
       </div>
 
       {/* Email Dialog */}

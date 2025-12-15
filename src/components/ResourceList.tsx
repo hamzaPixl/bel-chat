@@ -1,14 +1,15 @@
 import { useTranslation } from 'react-i18next'
-import { FileText, ExternalLink } from 'lucide-react'
+import { FileText, Eye } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Ressource } from '@/api'
 
 interface ResourceListProps {
   resources: Ressource[]
+  onResourceClick?: (resource: Ressource) => void
   className?: string
 }
 
-export function ResourceList({ resources, className }: ResourceListProps) {
+export function ResourceList({ resources, onResourceClick, className }: ResourceListProps) {
   const { t } = useTranslation()
 
   if (!resources || resources.length === 0) {
@@ -24,10 +25,7 @@ export function ResourceList({ resources, className }: ResourceListProps) {
         {resources.map((resource, index) => (
           <button
             key={index}
-            onClick={() => {
-              // Action will be added later
-              console.log('Resource clicked:', resource)
-            }}
+            onClick={() => onResourceClick?.(resource)}
             className={cn(
               'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
               'bg-muted/50 hover:bg-muted',
@@ -44,7 +42,7 @@ export function ResourceList({ resources, className }: ResourceListProps) {
                 p.{resource.page_number}
               </span>
             )}
-            <ExternalLink className="h-3 w-3 text-muted-foreground shrink-0" />
+            <Eye className="h-3 w-3 text-muted-foreground shrink-0" />
           </button>
         ))}
       </div>
